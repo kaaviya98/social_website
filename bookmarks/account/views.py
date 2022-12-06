@@ -7,34 +7,29 @@ from django.http import HttpResponse
 def authorize_user(user, request):
     if user.is_active:
         login(request, user)
-        response = HttpResponse("Authenticated successfully")
+        return HttpResponse("Authenticated successfully")
     else:
-        response = HttpResponse(
+        return HttpResponse(
             "Account has been disabled please try any other account"
         )
-    return response
 
 
-def authenticate_user(request):
+def authenticate_user(request, user):
+    if user is not None:
+        return authorize_user(user, request)
+    else:
+        return HttpResponse("Invalid login")
 
-    form = LoginForm(request.POST)
+
+def user_login(request):
+
+    form = LoginForm(data=request.POST or None)
     if form.is_valid():
         user = authenticate(
             request,
             username=form.cleaned_data["username"],
             password=form.cleaned_data["password"],
         )
-        if user is not None:
-            response = authorize_user(user, request)
-        else:
-            response = HttpResponse("Invalid login")
-    return response
+        return authenticate_user(request, user)
 
-
-def user_login(request):
-
-    if request.method == "POST":
-        response = authenticate_user(request=request)
-    else:
-        response = render(request, "account/login.html", {"form": LoginForm()})
-    return response
+    return render(request, "account/login.html", {"form": LoginForm()})
