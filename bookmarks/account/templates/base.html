@@ -25,6 +25,7 @@
         {% if request.user.is_authenticated %}
         <Tab style = "padding: 12px;">Hello {{ request.user.first_name }}</Tab>
         <Tab style = "padding: 12px"> <a href="{% url "logout" %}">Logout</a></Tab>
+        <Tab style = "padding: 12px"> <a href="{% url "edit" %}">Edit Profile</a></Tab>
         <Tab style = "padding: 12px"> <a href="{% url "password_change" %}">password_change</a></Tab>
 
         {% else %}
