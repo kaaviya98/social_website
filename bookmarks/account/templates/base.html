@@ -6,6 +6,12 @@
  <link href="{% static "css/base.css" %}" rel="stylesheet">
 </head>
 <body>
+  {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        {% endif %}
  <div id="header">
  <span class="logo">Bookmarks</span>
  {% if request.user.is_authenticated %}
