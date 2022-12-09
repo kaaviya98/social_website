@@ -26,13 +26,17 @@ class ImageCreateForm(forms.ModelForm):
     def save(self, force_update=False, force_insert=False, commit=True):
         image_obj = super().save(commit=False)
         image_url = self.cleaned_data["url"]
-        name = slugify(image_obj.title)
-        extension = image_url.rsplit(".", 1)[1].lower()
-        image_name = f"{name}.{extension}"
-        response = request.urlopen(image_url)
-        image_obj.image.save(
-            image_name, ContentFile(response.read()), save=False
-        )
+        image_name = self.get_image_name(image_obj, image_url)
+        image = self.get_image_file(image_url)
+        image_obj.image.save(image_name, image, save=False)
         if commit:
             image_obj.save()
         return image_obj
+    def get_image_file(self, image_url):
+        response = request.urlopen(image_url)
+        return ContentFile(response.read())
+
+    def get_image_name(self, image_obj, image_url):
+        name = slugify(image_obj.title)
+        extension = image_url.rsplit(".", 1)[1].lower()
+        return f"{name}.{extension}"
