@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import ImageCreateForm
 from django.shortcuts import get_object_or_404
 from .models import Image
+from common.decorators import ajax_required
 
 
 @login_required
@@ -37,6 +38,7 @@ def image_detail(request, id, slug):
     )
 
 
+@ajax_required
 @login_required
 @require_POST
 def image_like(request):
