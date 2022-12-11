@@ -9,6 +9,7 @@ from django.http import JsonResponse, response
 from django.views.decorators.http import require_POST
 from bookmarks.common.decorators import ajax_required
 from .models import Contact
+from actions.utils import create_action
 
 
 @login_required
@@ -22,7 +23,7 @@ def validate_the_registeration_form(request):
         new_user = user_form.save(commit=False)
         new_user.set_password(user_form.cleaned_data["password"])
         new_user.save()
-        Profile.objects.create(user=new_user)
+        create_action(new_user, "has created an account")
         messages.success(
             request,
             "Registration successful you can login now to your account.",
@@ -102,6 +103,7 @@ def user_follow(request):
                 Contact.objects.get_or_create(
                     user_from=request.user, user_to=user
                 )
+                create_action(request.user, "is following", user)
             else:
                 Contact.objects.filter(
                     user_from=request.user, user_to=user
