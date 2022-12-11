@@ -175,3 +175,7 @@ EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+REDIS_DB = 0
