@@ -47,9 +47,11 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == "like":
                 image.users_like.add(request.user)
-            else:
+                response = JsonResponse({"status": "liked"})
+            elif image.users_like.count() == 1:
                 image.users_like.remove(request.user)
-            return JsonResponse({"status": "ok"})
+                response = JsonResponse({"status": "unliked"})
+            return response
         except Exception:
             pass
     return JsonResponse({"status": "error"})
