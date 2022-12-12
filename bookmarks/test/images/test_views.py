@@ -31,7 +31,6 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             user=self.user,
             title="test-image",
             slug="test-image",
-            url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
             image="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
         )
         response = self.client.get(
