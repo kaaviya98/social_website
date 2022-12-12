@@ -32,6 +32,7 @@ class ImageCreateForm(forms.ModelForm):
         if commit:
             image_obj.save()
         return image_obj
+
     def get_image_file(self, image_url):
         response = request.urlopen(image_url)
         return ContentFile(response.read())
