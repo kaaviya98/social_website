@@ -34,7 +34,7 @@ def image_create(request):
 @login_required
 def image_list(request):
     images = Image.objects.all()
-    paginator = Paginator(images, 5)
+    paginator = Paginator(images, 8)
     page = request.GET.get("page")
     try:
         images = paginator.page(page)

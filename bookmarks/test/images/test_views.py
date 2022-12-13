@@ -58,7 +58,6 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
         response = self.client.get(
             reverse("images:detail", args=[1, "test-image"])
         )
-<<<<<<< HEAD
         self.assertEqual(response.status_code, 404)
 
     def test_image_like_succeeds_when_called_with_ajax(self):
@@ -124,6 +123,19 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             reverse("images:like"),
         )
         self.assertEqual(response.status_code, 400)
-=======
-        self.assertEqual(response.status_code, 404)
->>>>>>> d4386d4 (Add ajax pagination to list view)
+
+    def test_template_used_with_image_list_view(self):
+        self.client.login(username="john", password="johnpassword")
+        self.create_images(5)
+        response = self.client.get(reverse("images:list"))
+        self.assertTemplateUsed(
+            response, "images/image/list.html", "images/image/list_ajax.html"
+        )
+
+    def test_images_list_returns_first_page_as_default(self):
+        self.client.login(username="john", password="johnpassword")
+        response = self.client.get(
+            reverse("images:list"),
+            {"images": self.create_images(30)},
+        )
+        self.assertEqual(response.context.get("images").number, 1)
