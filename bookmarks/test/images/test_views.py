@@ -74,7 +74,7 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             {"id": 1, "action": "like"},
         )
 
-        self.assertEqual(response.content.decode(), '{"status": "liked"}')
+        self.assertEqual(response.content.decode(), '{"status": "ok"}')
 
     def test_image_unlike_succeeds_with_valid_image(self):
         self.client.login(username="john", password="johnpassword")
@@ -95,7 +95,7 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             {"id": 1, "action": "unlike"},
         )
 
-        self.assertEqual(response.content.decode(), '{"status": "unliked"}')
+        self.assertEqual(response.content.decode(), '{"status": "ok"}')
 
     def test_image_like_fails_without_image_id_and_action(self):
         self.client.login(username="john", password="johnpassword")
