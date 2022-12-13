@@ -71,7 +71,8 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
         )
         response = self.client.post(
             reverse("images:like"),
-            {"id": 1, "action": "like"},**{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+            {"id": 1, "action": "like"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
         )
 
         self.assertEqual(response.content.decode(), '{"status": "ok"}')
@@ -87,7 +88,8 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
         )
         self.client.post(
             reverse("images:like"),
-            {"id": 1, "action": "like"},**{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+            {"id": 1, "action": "like"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
         )
 
         response = self.client.post(
@@ -97,7 +99,9 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
 
         self.assertEqual(response.content.decode(), '{"status": "ok"}')
 
-    def test_image_like_fails_without_image_id_and_action_when_called_with_ajax(self):
+    def test_image_like_fails_without_image_id_and_action_when_called_with_ajax(
+        self,
+    ):
         self.client.login(username="john", password="johnpassword")
 
         self.image = Image.objects.create(
@@ -107,7 +111,9 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             image="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
         )
         response = self.client.post(
-            reverse("images:like"), {"id": "None", "action": "None"},**{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+            reverse("images:like"),
+            {"id": "None", "action": "None"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
         )
         self.assertEqual(response.content.decode(), '{"status": "error"}')
 
