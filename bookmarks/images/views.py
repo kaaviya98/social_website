@@ -6,7 +6,7 @@ from django.contrib import messages
 from .forms import ImageCreateForm
 from django.shortcuts import get_object_or_404
 from .models import Image
-from common.decorators import ajax_required
+from bookmarks.common.decorators import ajax_required,is_ajax
 from django.http.response import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -41,10 +41,10 @@ def image_list(request):
     except PageNotAnInteger:
         images = paginator.page(1)
     except EmptyPage:
-        if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse("")
         images = paginator.page(paginator.num_pages)
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "images/image/list_ajax.html",
