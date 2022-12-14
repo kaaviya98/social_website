@@ -30,6 +30,6 @@ class TestUrls(ModelMixinTestCase, TestCase):
 
     def test_account_user_detail_url_is_resolved(self):
         self.assertEqual(
-            (resolve(reverse("user_detail")).func),
+            (resolve(reverse("user_detail", args=["john"])).func),
             user_detail,
         )

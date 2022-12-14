@@ -61,3 +61,21 @@ class ProfileEdit(ModelMixinTestCase, TestCase):
         )
         user = User.objects.get(username="john")
         self.assertEqual(user.first_name, "kaaviya")
+
+
+class UserDetailView(ModelMixinTestCase, TestCase):
+    def test_template_used_with_user_detail_view(self):
+
+        self.client.login(username="john", password="johnpassword")
+        response = self.client.get(reverse("user_detail", args=["john"]))
+
+        self.assertTemplateUsed(response, "account/user/detail.html")
+
+    def test_status_code_returns_404_for_invalid_user(self):
+
+        self.client.login(username="john", password="johnpassword")
+        response = self.client.get(
+            reverse("user_detail", args=["invalid-user"])
+        )
+
+        self.assertEqual(response.status_code, 404)
