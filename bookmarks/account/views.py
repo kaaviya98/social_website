@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, ProfileEditForm, UserEditForm
 from django.contrib import messages
+from .models import Profile
 
 
 @login_required
@@ -15,6 +16,7 @@ def validate_the_registeration_form(request):
         new_user = user_form.save(commit=False)
         new_user.set_password(user_form.cleaned_data["password"])
         new_user.save()
+        Profile.objects.create(user=new_user)
         messages.success(
             request,
             "Registration successful you can login now to your account.",
