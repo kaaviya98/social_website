@@ -9,6 +9,9 @@ class ModelMixinTestCase(TestCase):
         self.user = User.objects.create_user(
             username="john", password="johnpassword"
         )
+        self.second_user = User.objects.create_user(
+            username="johncena", password="johncenapassword"
+        )
         Profile.objects.create(user=self.user)
 
     def create_images(self, count):
