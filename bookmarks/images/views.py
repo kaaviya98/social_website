@@ -6,7 +6,8 @@ from django.contrib import messages
 from .forms import ImageCreateForm
 from django.shortcuts import get_object_or_404
 from .models import Image
-from bookmarks.common.decorators import ajax_required,is_ajax
+from bookmarks.common.decorators import ajax_required, is_ajax
+from django.views.generic import ListView,TemplateView
 from django.http.response import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -30,31 +31,28 @@ def image_create(request):
         {"section": "images", "form": form},
     )
 
+class ImageListView(ListView):
+    model=Image
+    paginate_by = 6
+    context_object_name = 'images'
 
-@login_required
-def image_list(request):
-    images = Image.objects.all()
-    paginator = Paginator(images, 8)
-    page = request.GET.get("page")
-    try:
-        images = paginator.page(page)
-    except PageNotAnInteger:
-        images = paginator.page(1)
-    except EmptyPage:
-        if is_ajax(request):
-            return HttpResponse("")
-        images = paginator.page(paginator.num_pages)
-    if is_ajax(request):
-        return render(
-            request,
-            "images/image/list_ajax.html",
-            {"section": "images", "images": images},
-        )
+   
+    def get_template_names(self):
+        template_name = 'images/image/list.html'
+        if is_ajax(self.request):
+            template_name = 'images/image/list_ajax.html'
+        return template_name
+    
+    
+def image_detail(request, id, slug):
+    image = get_object_or_404(Image, id=id, slug=slug)
     return render(
         request,
-        "images/image/list.html",
-        {"section": "images", "images": images},
+        "images/image/detail.html",
+        {"section": "images", "image": image},
     )
+
+
 
 
 def image_detail(request, id, slug):
