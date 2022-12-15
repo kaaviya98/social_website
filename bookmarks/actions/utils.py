@@ -14,7 +14,7 @@ def create_action(user, verb, target=None):
     if target:
         target_ct = ContentType.objects.get_for_model(target)
         similar_actions = user_recent_actions.filter(
-            target_ct=target_ct, target_id=target.id
+            content_type=target_ct, target_id=target.id
         )
 
     if not similar_actions:
