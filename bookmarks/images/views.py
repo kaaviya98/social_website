@@ -7,9 +7,7 @@ from .forms import ImageCreateForm
 from django.shortcuts import get_object_or_404
 from .models import Image
 from bookmarks.common.decorators import ajax_required, is_ajax
-from django.views.generic import ListView, TemplateView
-from django.http.response import HttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import ListView
 
 
 @login_required

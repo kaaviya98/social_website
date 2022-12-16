@@ -3,9 +3,9 @@
 {% for image in images %}
   <div class="image">
     <a href="{{ image.get_absolute_url }}">
-      {% thumbnail image.image 300x300 crop="smart" as im %}
+      {% thumbnail image.image 300x300 crop="smart" as image_thumbnail %}
       <a href="{{ image.get_absolute_url }}">
-        <img src="{{ im.url }}">
+        <img src="{{ image_thumbnail.url }}">
       </a>
     </a>
     <div class="info">
