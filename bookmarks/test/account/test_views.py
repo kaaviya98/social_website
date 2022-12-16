@@ -79,3 +79,48 @@ class UserDetailView(ModelMixinTestCase, TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+
+    def test_user_follow_succeds_for_valid_user(self):
+        self.client.login(username="john", password="johnpassword")
+
+        response = self.client.post(
+            reverse("user_follow"),
+            {"id": 1, "action": "follow"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEqual(response.content.decode(), '{"status": "ok"}')
+
+    def test_user_unfollow_succeds_for_valid_user(self):
+        self.client.login(username="john", password="johnpassword")
+
+        self.client.post(
+            reverse("user_follow"),
+            {"id": 1, "action": "follow"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+
+        response = self.client.post(
+            reverse("user_follow"),
+            {"id": 1, "action": "unfollow"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEqual(response.content.decode(), '{"status": "ok"}')
+
+    def test_user_follow_fails_for_invalid_user(self):
+        self.client.login(username="john", password="johnpassword")
+
+        response = self.client.post(
+            reverse("user_follow"),
+            {"id": 10, "action": "follow"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEqual(response.content.decode(), '{"status": "error"}')
+
+    def test_user_follow_fails_when_called_directly_without_ajax(self):
+        self.client.login(username="john", password="johnpassword")
+
+        response = self.client.post(
+            reverse("user_follow"),
+            {"id": 10, "action": "follow"},
+        )
+        self.assertEqual(response.status_code, 400)
