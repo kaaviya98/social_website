@@ -123,3 +123,11 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
             reverse("images:like"),
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_template_used_with_image_list_view(self):
+        self.client.login(username="john", password="johnpassword")
+        self.create_images(5)
+        response = self.client.get(reverse("images:list"))
+        self.assertTemplateUsed(
+            response, "images/image/list.html", "images/image/list_ajax.html"
+        )
