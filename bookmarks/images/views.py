@@ -34,6 +34,7 @@ def image_create(request):
 
 class ImageListView(ListView):
     model = Image
+    queryset = Image.objects.order_by("-total_likes")
     paginate_by = 6
     context_object_name = "images"
 
