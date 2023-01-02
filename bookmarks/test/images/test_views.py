@@ -141,6 +141,12 @@ class ImageCreateView(ModelMixinTestCase, TestCase):
 
 
 class ImagesDisplayView(ModelMixinTestCase, TestCase):
+    def view_image(self, image_id, image_slug, count):
+        for _ in range(count):
+            self.client.get(
+                reverse("images:detail", args=[image_id, image_slug])
+            )
+
     def test_images_diaplay(self):
         self.client.login(username="john", password="johnpassword")
         Zero_like_image = Image.objects.create(
@@ -183,3 +189,36 @@ class ImagesDisplayView(ModelMixinTestCase, TestCase):
             reverse("images:detail", args=[1, "test-image"])
         )
         self.assertEqual(response.context.get("total_views"), 2)
+
+    def test_image_ranking_displays_most_viewed_images_in_ascending_order(
+        self,
+    ):
+        self.client.login(username="john", password="johnpassword")
+        least_viewed_image = Image.objects.create(
+            user=self.user,
+            title="test-first-image",
+            slug="test-first-image",
+            image="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
+        )
+        most_viewed_image = Image.objects.create(
+            user=self.user,
+            title="test-second-image",
+            slug="test-second-image",
+            image="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
+        )
+        redis_client.flushall()
+        self.view_image(
+            image_id=least_viewed_image.id,
+            image_slug=least_viewed_image.slug,
+            count=1,
+        )
+        self.view_image(
+            image_id=most_viewed_image.id,
+            image_slug=most_viewed_image.slug,
+            count=3,
+        )
+        response = self.client.get(reverse("images:ranking"))
+        self.assertQuerysetEqual(
+            response.context.get("most_viewed"),
+            [most_viewed_image, least_viewed_image],
+        )
