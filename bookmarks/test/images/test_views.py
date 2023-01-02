@@ -2,6 +2,13 @@ from django.test import TestCase
 from django.urls import reverse
 from images.models import Image
 from test.account.test_model_mixin import ModelMixinTestCase
+import redis
+from django.conf import settings
+
+
+redis_client = redis.Redis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
+)
 
 
 class ImageCreateView(ModelMixinTestCase, TestCase):
@@ -159,3 +166,20 @@ class ImagesDisplayView(ModelMixinTestCase, TestCase):
             Image_list_view.context.get("images"),
             [one_like_image, Zero_like_image],
         )
+
+    def test_images_views_increases_for_each_views(self):
+        self.client.login(username="john", password="johnpassword")
+        Image.objects.create(
+            user=self.user,
+            title="test-image",
+            slug="test-image",
+            image="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Berlin_Opera_UdL_asv2018-05.jpg/800px-Berlin_Opera_UdL_asv2018-05.jpg",
+        )
+        redis_client.flushall()
+        response = self.client.get(
+            reverse("images:detail", args=[1, "test-image"])
+        )
+        response = self.client.get(
+            reverse("images:detail", args=[1, "test-image"])
+        )
+        self.assertEqual(response.context.get("total_views"), 2)
